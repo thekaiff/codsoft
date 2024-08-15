@@ -1,6 +1,8 @@
+# STEP 1: Install beautifultable module to display contact in precise manner
+
 from beautifultable import BeautifulTable
 
-# STEP 1 : DIFINE CONTACT CLASS
+# STEP 2: DEFINE CONTACT CLASS
 
 class Contact:
     def __init__(self, name, phone, email, address) -> None:
@@ -16,7 +18,7 @@ class Contact:
         return [self.name, self.phone, self.email, self.address]
 
 
-# STEP 2 : CREATE CONTACT BOOK
+# STEP 3: CREATE CONTACT BOOK
 
 class ContactBook:
     def __init__(self) -> None:
@@ -25,17 +27,14 @@ class ContactBook:
     def add_contact(self, contact):
         self.contacts.append(contact)
 
-
-    def search_contact(self,name,phone):
+    def search_contact(self, name, phone):
         for contact in self.contacts:
-            if   contact.name == name or contact.phone == phone:
-                print("\n Contact found!\n")
+            if contact.name == name or contact.phone == phone:
                 return contact
-            else:
-                return f"\nContact not found!\n"
-        
-    def update_contact(self, name,phone):
-        contact = self.search_contact(name,phone)
+        return None
+
+    def update_contact(self, name, phone):
+        contact = self.search_contact(name, phone)
         if contact:
             print(f"\n\nCurrent details:\n{contact}")
             new_name = input(f"\nEnter new name ({contact.name}): ") or contact.name
@@ -53,31 +52,32 @@ class ContactBook:
             print("\nContact not found!")
 
     def dlt_contact(self, name):
-        # Iterate over the contacts list to find the contact to delete
         for contact in self.contacts:
-            if contact.name.lower() == name.lower():  # Ensure the comparison is case-insensitive
-                self.contacts.remove(contact)  # Remove the contact from the list
+            if contact.name.lower() == name.lower():
+                self.contacts.remove(contact)
                 print(f"\nContact '{name}' deleted successfully.")
-                return  # Exit the function after deleting the contact
-        
-        # If no contact is found with the given name, print a message
+                return
         print(f"\nContact '{name}' not found.")
 
-    def display_contact(self):
-         table = BeautifulTable()
-         table.columns.header = ["name", "phone_no.", "email", "address"]
-         for contact in self.contacts:
-             table.rows.append(contact.to_list())
-             if len(self.contacts) > 0:
-                print(table)
-             else:
-                print("No contacts to display.")
+    def display_contact(self, contact=None):
+        table = BeautifulTable()
+        table.columns.header = ["name", "phone_no.", "email", "address"]
+
+        if contact:
+            table.rows.append(contact.to_list())
+        else:
+            for contact in self.contacts:
+                table.rows.append(contact.to_list())
+
+        if len(table.rows) > 0:
+            print(table)
+        else:
+            print("No contacts to display.")
 
 
+# STEP 4: IMPLEMENT THE USER INTERFACE 
 
-# STEP 3 : IMPLEMENT THE USER INTERFACE 
-
-def  main():
+def main():
     contact_book = ContactBook()
     
     while True:
@@ -104,25 +104,24 @@ def  main():
             print("\nContact added successfully!")
 
         elif choice == "2": # Search Contact
-            name    = input("\nEnter the name to search : ")
-            phone    = input("Enter the phone number to search : ")
-            contact = contact_book.search_contact(name,phone)
-            if contact : 
+            name  = input("\nEnter the name to search : ")
+            phone = input("Enter the phone number to search : ")
+            contact = contact_book.search_contact(name, phone)
+            if contact: 
                 print("\nContact found: \n")
-                contact_book.display_contact()
+                contact_book.display_contact(contact)
             else: 
-                return f"\nContact not found!"
+                print("\nContact not found!")
             
         elif choice == "3": # Update Contact
-            name = input("\nEnter the name of the contact to update: ")
-            contact_book.update_contact(name,phone)
+            name  = input("\nEnter the name of the contact to update: ")
+            phone = input("Enter the phone number to update: ")
+            contact_book.update_contact(name, phone)
             
         elif choice == "4": # Delete Contact
-            name = input("\nEnter the name of the contact to be deletd: ")
+            name = input("\nEnter the name of the contact to be deleted: ")
             contact_book.dlt_contact(name)
-            print("Contact Deleted.")
-
-        
+            
         elif choice == "5": # Display Contacts
             print("\n\nAll Contacts: \n")
             contact_book.display_contact()
@@ -136,5 +135,3 @@ def  main():
 
 if __name__ == "__main__":
     main()
-
-
